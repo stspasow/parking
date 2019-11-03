@@ -3,9 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Discount;
-use App\Exceptions\MissingVehicleException;
-use App\Exceptions\NoFreeSpacesException;
-use App\Exceptions\VehicleAlreadyRegisteredException;
 use App\Http\Controllers\BaseController as BaseController;
 use App\Http\Requests\RegisterRequest;
 use App\Record;
@@ -32,11 +29,7 @@ class VehicleController extends BaseController
     public function store(RegisterRequest $request)
     {
         //check if vehicle is already in the parking
-        try {
-            $this->parkingService->isVehicleAlreadyRegistered($request['plateNumber']);
-        } catch (VehicleAlreadyRegisteredException $exception) {
-            return $this->sendError($exception->getMessage(), ["Vehicle already in"]);
-        }
+        $this->parkingService->isVehicleAlreadyRegistered($request['plateNumber']);
 
         $vehicleType = Vehicle::where('category', '=', $request['vehicleType'])->first();
 
@@ -49,12 +42,7 @@ class VehicleController extends BaseController
             ],
         ]);
 
-        //check if parking is full
-        try {
-            $this->parkingService->checkForFreeSpaces($vehicle);
-        } catch (NoFreeSpacesException $exception) {
-            return $this->sendError($exception->getMessage(), ["Parking is full"]);
-        }
+        $this->parkingService->checkForFreeSpaces($vehicle);
 
         $record = Record::create([
             'plateNumber' => $request['plateNumber'],
@@ -81,11 +69,7 @@ class VehicleController extends BaseController
      */
     public function destroy($plateNumber)
     {
-        try {
-            $record = $this->parkingService->vehicleExists($plateNumber);
-        } catch (MissingVehicleException $exception) {
-            return $this->sendError($exception->getMessage(), ["Vehicle not found"]);
-        }
+        $record = $this->parkingService->vehicleExists($plateNumber);
 
         $fee = $this->calculateFee($record);
         $record->delete();
@@ -112,11 +96,7 @@ class VehicleController extends BaseController
      */
     public function getCurrentFee($plateNumber)
     {
-        try {
-            $record = $this->parkingService->vehicleExists($plateNumber);
-        } catch (MissingVehicleException $exception) {
-            return $this->sendError($exception->getMessage(), ["Vehicle not found"]);
-        }
+        $record = $this->parkingService->vehicleExists($plateNumber);
 
         $fee = $this->calculateFee($record);
 

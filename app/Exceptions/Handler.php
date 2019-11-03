@@ -4,6 +4,9 @@ namespace App\Exceptions;
 
 use Exception;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use App\Exceptions\MissingVehicleException;
+use App\Exceptions\NoFreeSpacesException;
+use App\Exceptions\VehicleAlreadyRegisteredException;
 
 class Handler extends ExceptionHandler
 {
@@ -46,6 +49,14 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
+        if ($exception instanceof NoFreeSpacesException) {
+            return response()->json(['error' => $exception->getMessage()], 422);
+        } else if ($exception instanceof MissingVehicleException) {
+            return response()->json(['error' => $exception->getMessage()], 404);
+        } else if ($exception instanceof VehicleAlreadyRegisteredException) {
+            return response()->json(['error' => $exception->getMessage()], 422);
+        }
+
         return parent::render($request, $exception);
     }
 }
