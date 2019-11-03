@@ -93,6 +93,11 @@ class VehicleController extends BaseController
         return $this->sendResponse(['fee' => $fee], Response::HTTP_OK);
     }
 
+    /**
+     * Return vehicle types.
+     *
+     * @return \Illuminate\Http\Response
+     */
     public function getVehicleTypes()
     {
         $vehicleTypes = Vehicle::all();

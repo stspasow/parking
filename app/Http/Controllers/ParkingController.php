@@ -17,6 +17,11 @@ class ParkingController extends BaseController
         $this->parkingService = $service;
     }
 
+    /**
+     * Return current free spaces on the parking
+     *
+     * @return \Illuminate\Http\Response
+     */
     public function getFreeSpaces()
     {
         $freeSpaces = $this->parkingService->getFreeSpaces();
@@ -24,6 +29,11 @@ class ParkingController extends BaseController
         return $this->sendResponse(['freeSpaces' => $freeSpaces], Response::HTTP_OK);
     }
 
+    /**
+     * Return available discounts
+     *
+     * @return \Illuminate\Http\Response
+     */
     public function getDiscounts()
     {
         $discounts = Discount::all();
