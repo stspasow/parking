@@ -16,3 +16,12 @@ use Illuminate\Http\Request;
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+
+Route::get('/vehicle/types', 'VehicleController@getVehicleTypes');
+Route::get('/vehicle/{platenumber}/currentFee', 'VehicleController@getCurrentFee');
+Route::post('/vehicle/register', 'VehicleController@store');
+Route::delete('/vehicle/{platenumber}', 'VehicleController@destroy');
+
+Route::get('/parking/freespaces', 'ParkingController@getFreeSpaces');
+Route::get('/parking/discounts', 'ParkingController@getDiscounts');
